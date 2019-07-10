@@ -3,7 +3,6 @@ package structureXML
 import "encoding/xml"
 
 type ContentCategory struct {
-	Text        string `xml:",chardata"`
 	ID          string `xml:"id"`
 	Title       string `xml:"title"`
 	Description string `xml:"description"`
@@ -11,12 +10,10 @@ type ContentCategory struct {
 }
 
 type ContentCategories struct {
-	Text            string            `xml:",chardata"`
 	ContentCategory []ContentCategory `xml:"content_category"`
 }
 
 type Genre struct {
-	Text        string `xml:",chardata"`
 	ID          string `xml:"id"`
 	CategoryID  string `xml:"category_id"`
 	Title       string `xml:"title"`
@@ -25,26 +22,22 @@ type Genre struct {
 }
 
 type Genres struct {
-	Text         string  `xml:",chardata"`
 	ContentGenre []Genre `xml:"content_genre"`
 }
 
 type File struct {
-	Text   string `xml:",chardata"`
 	URL    string `xml:"url"`
 	ID     string `xml:"id"`
 	Format string `xml:"format"`
 }
 
 type Posters struct {
-	Text string `xml:",chardata"`
 	File []File `xml:"file"`
 }
 
 type Person struct {
-	Text        string  `xml:",chardata"`
 	ID          string  `xml:"id"`
-	Posters     Posters `xml:"posters"`
+	Posters     Posters `xml:"posters" pg:"jsonb"`
 	Name        string  `xml:"name"`
 	IsStar      string  `xml:"is_star"`
 	EngTitle    string  `xml:"eng_title"`
@@ -61,24 +54,20 @@ type Person struct {
 }
 
 type Persons struct {
-	Text   string   `xml:",chardata"`
 	Person []Person `xml:"person"`
 }
 
 type PersonType struct {
-	Text        string `xml:",chardata"`
 	ID          string `xml:"id"`
 	Title       string `xml:"title"`
 	Description string `xml:"description"`
 }
 
 type PersonsType struct {
-	Text       string       `xml:",chardata"`
 	PersonType []PersonType `xml:"persons_type"`
 }
 
 type Award struct {
-	Text          string `xml:",chardata"`
 	ID            string `xml:"id"`
 	Title         string `xml:"title"`
 	Description   string `xml:"description"`
@@ -90,63 +79,52 @@ type Award struct {
 }
 
 type Awards struct {
-	Text  string  `xml:",chardata"`
 	Award []Award `xml:"award"`
 }
 
 type PersonInfo struct {
-	Text         string `xml:",chardata"`
 	PersonID     string `xml:"person_id"`
 	PersonTypeID string `xml:"person_type_id"`
 	ExtraInfo    string `xml:"extra_info"`
 }
 
 type PersonsInfo struct {
-	Text   string       `xml:",chardata"`
 	Person []PersonInfo `xml:"person"`
 }
 
 type CompilationGenre struct {
-	Text           string `xml:",chardata"`
 	ContentGenreID string `xml:"content_genre_id"`
 }
 
 type CompilationGenres struct {
-	Text  string             `xml:",chardata"`
 	Genre []CompilationGenre `xml:"genre"`
 }
 
 type CompilationAward struct {
-	Text          string `xml:",chardata"`
 	CompilationID string `xml:"compilation_id"`
 	AwardID       string `xml:"award_id"`
 	Year          string `xml:"year"`
 }
 
 type CompilationAwards struct {
-	Text  string             `xml:",chardata"`
 	Award []CompilationAward `xml:"award"`
 }
 
 type Files struct {
-	Text string `xml:",chardata"`
-	File File   `xml:"file"`
+	File File `xml:"file"`
 }
 
 type Poster struct {
-	Text          string `xml:",chardata"`
 	ID            string `xml:"id"`
 	CompilationID string `xml:"compilation_id"`
 	Files         Files  `xml:"files"`
 }
 
 type PostersInfo struct {
-	Text   string `xml:",chardata"`
 	Poster Poster `xml:"poster"`
 }
 
 type CompilationSeasonAdditionalData struct {
-	Text                           string `xml:",chardata"`
 	ID                             string `xml:"id"`
 	Title                          string `xml:"title"`
 	AdditionalDataTypeID           string `xml:"additional_data_type_id"`
@@ -155,35 +133,29 @@ type CompilationSeasonAdditionalData struct {
 }
 
 type SeasonDescrAdditionalData struct {
-	Text                            string                          `xml:",chardata"`
 	CompilationSeasonAdditionalData CompilationSeasonAdditionalData `xml:"compilation_season_additional_data"`
 }
 
 type SeasonDescription2 struct {
-	Text           string                    `xml:",chardata"`
 	Season         string                    `xml:"season"`
 	Description    string                    `xml:"description"`
 	AdditionalData SeasonDescrAdditionalData `xml:"additional_data"`
 }
 
 type SeasonDescription struct {
-	Text              string               `xml:",chardata"`
 	SeasonDescription []SeasonDescription2 `xml:"season_description"`
 }
 
 type ReleaseDate struct {
-	Text             string `xml:",chardata"`
 	ReleaseDateBegin string `xml:"release_date_begin"`
 	ReleaseDateEnd   string `xml:"release_date_end"`
 }
 
 type ReleaseDates struct {
-	Text        string        `xml:",chardata"`
 	ReleaseDate []ReleaseDate `xml:"release_date"`
 }
 
 type CompilationAdditionalData struct {
-	Text                 string `xml:",chardata"`
 	ID                   string `xml:"id"`
 	Title                string `xml:"title"`
 	AdditionalDataTypeID string `xml:"additional_data_type_id"`
@@ -192,97 +164,78 @@ type CompilationAdditionalData struct {
 }
 
 type CompAdditionalData struct {
-	Text                      string                      `xml:",chardata"`
 	CompilationAdditionalData []CompilationAdditionalData `xml:"compilation_additional_data"`
 }
 
 type Category struct {
-	Text              string `xml:",chardata"`
 	ContentCategoryID string `xml:"content_category_id"`
 }
 
 type Categories struct {
-	Text     string     `xml:",chardata"`
 	Category []Category `xml:"category"`
 }
 
 type Tima struct {
-	Text string   `xml:",chardata"`
 	Item []string `xml:"item"`
 }
 
 type ProductionCompany struct {
-	Text string `xml:",chardata"`
 	Item string `xml:"item"`
 }
 
 type Theme struct {
-	Text string   `xml:",chardata"`
 	Item []string `xml:"item"`
 }
 
 type Audience struct {
-	Text string   `xml:",chardata"`
 	Item []string `xml:"item"`
 }
 
 type MoodInfo struct {
-	Text string   `xml:",chardata"`
 	Item []string `xml:"item"`
 }
 
 type Quality struct {
-	Text string   `xml:",chardata"`
 	Item []string `xml:"item"`
 }
 
 type About struct {
-	Text string   `xml:",chardata"`
 	Item []string `xml:"item"`
 }
 
 type Basis struct {
-	Text string   `xml:",chardata"`
 	Item []string `xml:"item"`
 }
 
 type Place struct {
-	Text string   `xml:",chardata"`
 	Item []string `xml:"item"`
 }
 
 type Subgenre struct {
-	Text string   `xml:",chardata"`
 	Item []string `xml:"item"`
 }
 
 type Gender struct {
-	Text string   `xml:",chardata"`
 	Item []string `xml:"item"`
 }
 
 type Character struct {
-	Text string `xml:",chardata"`
 	Item string `xml:"item"`
 }
 
 type CategoryProperty struct {
-	Text string `xml:",chardata"`
 	Item string `xml:"item"`
 }
 
 type Check struct {
-	Text string `xml:",chardata"`
 	Item string `xml:"item"`
 }
 
 type Restrictions struct {
-	Text string `xml:",chardata"`
 	Item string `xml:"item"`
 }
 
 type Compilation struct {
-	Text              string             `xml:",chardata"`
 	ID                string             `xml:"id"`
 	Title             string             `xml:"title"`
 	Description       string             `xml:"description"`
@@ -298,86 +251,76 @@ type Compilation struct {
 	Hru               string             `xml:"hru"`
 	FirstSeriesDate   string             `xml:"first_series_date"`
 	LastSeriesDate    string             `xml:"last_series_date"`
-	Persons           PersonsInfo        `xml:"persons"`
-	Genres            CompilationGenres  `xml:"genres"`
-	Awards            CompilationAwards  `xml:"awards"`
-	Posters           PostersInfo        `xml:"posters"`
-	SeasonDescription SeasonDescription  `xml:"season_description"`
-	ReleaseDates      ReleaseDates       `xml:"release_dates"`
-	AdditionalData    CompAdditionalData `xml:"additional_data"`
-	Categories        Categories         `xml:"categories"`
-	Tima              Tima               `xml:"tima"`
-	ProductionCompany ProductionCompany  `xml:"production_company"`
-	Theme             Theme              `xml:"theme"`
-	Audience          Audience           `xml:"audience"`
-	Mood              MoodInfo           `xml:"mood"`
-	Quality           Quality            `xml:"quality"`
-	About             About              `xml:"about"`
-	Basis             Basis              `xml:"basis"`
-	Place             Place              `xml:"place"`
+	Persons           PersonsInfo        `xml:"persons" pg:"jsonb"`
+	Genres            []string           `xml:"genres>genre>content_genre_id" pg:"array"`
+	Awards            CompilationAwards  `xml:"awards" pg:"jsonb"`
+	Posters           PostersInfo        `xml:"posters" pg:"jsonb"`
+	SeasonDescription SeasonDescription  `xml:"season_description" pg:"jsonb"`
+	ReleaseDates      ReleaseDates       `xml:"release_dates" pg:"jsonb"`
+	AdditionalData    CompAdditionalData `xml:"additional_data" pg:"jsonb"`
+	Categories        []string           `xml:"categories>category>content_category_id" pg:"array"`
+	Tima              Tima               `xml:"tima" pg:"jsonb"`
+	ProductionCompany ProductionCompany  `xml:"production_company" pg:"jsonb"`
+	Theme             Theme              `xml:"theme" pg:"jsonb"`
+	Audience          Audience           `xml:"audience" pg:"jsonb"`
+	Mood              MoodInfo           `xml:"mood" pg:"jsonb"`
+	Quality           Quality            `xml:"quality" pg:"jsonb"`
+	About             About              `xml:"about" pg:"jsonb"`
+	Basis             Basis              `xml:"basis" pg:"jsonb"`
+	Place             Place              `xml:"place" pg:"jsonb"`
 	Fake              string             `xml:"fake"`
-	Subgenre          Subgenre           `xml:"subgenre"`
-	Gender            Gender             `xml:"gender"`
-	Character         Character          `xml:"character"`
-	CategoryProperty  CategoryProperty   `xml:"category_property"`
-	Check             Check              `xml:"check"`
-	Restrictions      Restrictions       `xml:"restrictions"`
+	Subgenre          Subgenre           `xml:"subgenre" pg:"jsonb"`
+	Gender            Gender             `xml:"gender" pg:"jsonb"`
+	Character         Character          `xml:"character" pg:"jsonb"`
+	CategoryProperty  CategoryProperty   `xml:"category_property" pg:"jsonb"`
+	Check             Check              `xml:"check" pg:"jsonb"`
+	Restrictions      Restrictions       `xml:"restrictions" pg:"jsonb"`
 }
 
 type Compilations struct {
-	Text        string        `xml:",chardata"`
 	Compilation []Compilation `xml:"compilation"`
 }
 
-type Country []struct {
-	Text  string `xml:",chardata"`
+type Country struct {
 	ID    string `xml:"id"`
 	Title string `xml:"title"`
 	Name  string `xml:"name"`
 }
 
 type Countries struct {
-	Text    string `xml:",chardata"`
 	Country []Country
 }
 
-type Instrument []struct {
-	Text  string `xml:",chardata"`
+type Instrument struct {
 	ID    string `xml:"id"`
 	Title string `xml:"title"`
 	Info  string `xml:"info"`
 }
 
 type Instruments struct {
-	Text       string       `xml:",chardata"`
 	Instrument []Instrument `xml:"instrument"`
 }
 
 type Mood struct {
-	Text  string `xml:",chardata"`
 	ID    string `xml:"id"`
 	Title string `xml:"title"`
 	Info  string `xml:"info"`
 }
 
 type Moods struct {
-	Text string `xml:",chardata"`
 	Mood []Mood `xml:"mood"`
 }
 
 type RusVersion struct {
-	Text  string `xml:",chardata"`
 	ID    string `xml:"id"`
 	Title string `xml:"title"`
 }
 
 type RusVersions struct {
-	Text       string       `xml:",chardata"`
 	RusVersion []RusVersion `xml:"rus_version"`
 }
 
 type ContentFormat struct {
-	Text        string `xml:",chardata"`
 	ID          string `xml:"id"`
 	Title       string `xml:"title"`
 	Description string `xml:"description"`
@@ -386,36 +329,30 @@ type ContentFormat struct {
 }
 
 type ContentFormats struct {
-	Text          string          `xml:",chardata"`
 	ContentFormat []ContentFormat `xml:"content_format"`
 }
 
 type Lang struct {
-	Text  string `xml:",chardata"`
 	ID    string `xml:"id"`
 	Title string `xml:"title"`
 	Name  string `xml:"name"`
 }
 
 type Langs struct {
-	Text string `xml:",chardata"`
 	Lang []Lang `xml:"lang"`
 }
 
 type ContentType struct {
-	Text        string `xml:",chardata"`
 	ID          string `xml:"id"`
 	Title       string `xml:"title"`
 	Description string `xml:"description"`
 }
 
 type ContentTypes struct {
-	Text        string        `xml:",chardata"`
 	ContentType []ContentType `xml:"content_type"`
 }
 
 type Property struct {
-	Text     string `xml:",chardata"`
 	ID       string `xml:"id"`
 	Title    string `xml:"title"`
 	XMLField string `xml:"xml_field"`
@@ -423,57 +360,47 @@ type Property struct {
 }
 
 type Properties struct {
-	Text     string     `xml:",chardata"`
 	Property []Property `xml:"property"`
 }
 
 type PropertyValue struct {
-	Text  string `xml:",chardata"`
 	ID    string `xml:"id"`
 	Title string `xml:"title"`
 }
 
 type PropertyValues struct {
-	Text          string          `xml:",chardata"`
 	PropertyValue []PropertyValue `xml:"property_value"`
 }
 
 type PromoInfo struct {
-	Text  string `xml:",chardata"`
 	ID    string `xml:"id"`
 	Title string `xml:"title"`
 }
 
 type Promo struct {
-	Text  string      `xml:",chardata"`
 	Promo []PromoInfo `xml:"promo"`
 }
 
 type ContentAdditionalDataType struct {
-	Text  string `xml:",chardata"`
 	ID    string `xml:"id"`
 	Title string `xml:"title"`
 }
 
 type AdditionalDataType struct {
-	Text                      string                      `xml:",chardata"`
 	ContentAdditionalDataType []ContentAdditionalDataType `xml:"content_additional_data_type"`
 }
 
 type ContentGenreInfo struct {
-	Text           string `xml:",chardata"`
 	ContentID      string `xml:"content_id"`
 	ContentGenreID string `xml:"content_genre_id"`
 	Priority       string `xml:"priority"`
 }
 
 type ContentGenresInfo struct {
-	Text         string             `xml:",chardata"`
 	ContentGenre []ContentGenreInfo `xml:"content_genre"`
 }
 
 type ContentAward struct {
-	Text      string `xml:",chardata"`
 	ContentID string `xml:"content_id"`
 	AwardID   string `xml:"award_id"`
 	Year      string `xml:"year"`
@@ -485,22 +412,18 @@ type ContentAwards struct {
 }
 
 type ContentMoods struct {
-	Text string   `xml:",chardata"`
 	Mood []string `xml:"mood"`
 }
 
 type ContentCategoriesInfo struct {
-	Text            string   `xml:",chardata"`
 	ContentCategory []string `xml:"content_category"`
 }
 
 type ContentRusVersions struct {
-	Text       string   `xml:",chardata"`
 	RusVersion []string `xml:"rus_version"`
 }
 
 type ContentAdditionalData struct {
-	Text                 string `xml:",chardata"`
 	ID                   string `xml:"id"`
 	Title                string `xml:"title"`
 	AdditionalDataTypeID string `xml:"additional_data_type_id"`
@@ -509,95 +432,77 @@ type ContentAdditionalData struct {
 }
 
 type AdditionalData struct {
-	Text                  string                  `xml:",chardata"`
 	ContentAdditionalData []ContentAdditionalData `xml:"content_additional_data"`
 }
 
 type ContentFiles struct {
-	Text string `xml:",chardata"`
 	File []File `xml:"file"`
 }
 
 type Thumb struct {
-	Text      string       `xml:",chardata"`
 	ID        string       `xml:"id"`
 	ContentID string       `xml:"content_id"`
 	Files     ContentFiles `xml:"files"`
 }
 
 type Thumbs struct {
-	Text  string `xml:",chardata"`
-	Thumb Thumb  `xml:"thumb"`
+	Thumb Thumb `xml:"thumb"`
 }
 
 type Subscriptions struct {
-	Text         string   `xml:",chardata"`
 	Subscription []string `xml:"subscription"`
 }
 
 type RightTypeList struct {
-	Text      string `xml:",chardata"`
 	RightType string `xml:"right_type"`
 }
 
 type RightHolder struct {
-	Text  string `xml:",chardata"`
 	ID    string `xml:"id"`
 	Title string `xml:"title"`
 }
 
 type RightHolders struct {
-	Text        string        `xml:",chardata"`
 	RightHolder []RightHolder `xml:"right_holder"`
 }
 
 type ContentCheck struct {
-	Text string   `xml:",chardata"`
 	Item []string `xml:"item"`
 }
 
 type ContentRestrictions struct {
-	Text string   `xml:",chardata"`
 	Item []string `xml:"item"`
 }
 
 type TestProperty struct {
-	Text string `xml:",chardata"`
 	Item string `xml:"item"`
 }
 
 type LocalizationCheck struct {
-	Text string `xml:",chardata"`
 	Item string `xml:"item"`
 }
 
 type ContentProductionCompany struct {
-	Text string   `xml:",chardata"`
 	Item []string `xml:"item"`
 }
 
 type ContentCharacter struct {
-	Text string   `xml:",chardata"`
 	Item []string `xml:"item"`
 }
 
 type Franchise struct {
-	Text string `xml:",chardata"`
 	Item string `xml:"item"`
 }
 
 type Shild struct {
-	Text string `xml:",chardata"`
 	Item string `xml:"item"`
 }
 
 type NewContent struct {
-	Text string `xml:",chardata"`
 	Item string `xml:"item"`
 }
 
 type Content struct {
-	Text              string                   `xml:",chardata"`
 	ID                string                   `xml:"id"`
 	Title             string                   `xml:"title"`
 	OrigTitle         string                   `xml:"orig_title"`
@@ -627,52 +532,49 @@ type Content struct {
 	RightDateEnd      string                   `xml:"right_date_end"`
 	DrmOnly           string                   `xml:"drm_only"`
 	Instruments       string                   `xml:"instruments"`
-	ContentGenres     ContentGenresInfo        `xml:"content_genres"`
-	Persons           PersonsInfo              `xml:"persons"`
-	Awards            ContentAwards            `xml:"awards"`
-	Moods             ContentMoods             `xml:"moods"`
-	ContentCategories ContentCategoriesInfo    `xml:"content_categories"`
-	Posters           PostersInfo              `xml:"posters"`
+	ContentGenres     ContentGenresInfo        `xml:"content_genres" pg:"jsonb"`
+	Persons           PersonsInfo              `xml:"persons" pg:"jsonb"`
+	Awards            ContentAwards            `xml:"awards" pg:"jsonb"`
+	Moods             ContentMoods             `xml:"moods" pg:"jsonb"`
+	ContentCategories ContentCategoriesInfo    `xml:"content_categories" pg:"jsonb"`
+	Posters           PostersInfo              `xml:"posters" pg:"jsonb"`
 	Trailers          string                   `xml:"trailers"`
-	RusVersions       ContentRusVersions       `xml:"rus_versions"`
-	AdditionalData    AdditionalData           `xml:"additional_data"`
-	Thumbs            Thumbs                   `xml:"thumbs"`
-	Subscriptions     Subscriptions            `xml:"subscriptions"`
-	RightTypeList     RightTypeList            `xml:"right_type_list"`
+	RusVersions       ContentRusVersions       `xml:"rus_versions" pg:"jsonb"`
+	AdditionalData    AdditionalData           `xml:"additional_data" pg:"jsonb"`
+	Thumbs            Thumbs                   `xml:"thumbs" pg:"jsonb"`
+	Subscriptions     Subscriptions            `xml:"subscriptions" pg:"jsonb"`
+	RightTypeList     RightTypeList            `xml:"right_type_list" pg:"jsonb"`
 	RightType         string                   `xml:"right_type"`
-	RightHolders      RightHolders             `xml:"right_holders"`
+	RightHolders      RightHolders             `xml:"right_holders" pg:"jsonb"`
 	Mp4               string                   `xml:"mp4"`
-	Tima              Tima                     `xml:"tima"`
-	Theme             Theme                    `xml:"theme"`
-	Audience          Audience                 `xml:"audience"`
-	Subgenre          Subgenre                 `xml:"subgenre"`
-	Mood              MoodInfo                 `xml:"mood"`
-	Quality           Quality                  `xml:"quality"`
-	About             About                    `xml:"about"`
-	Basis             Basis                    `xml:"basis"`
-	CategoryProperty  CategoryProperty         `xml:"category_property"`
-	Check             ContentCheck             `xml:"check"`
-	Place             Place                    `xml:"place"`
-	Restrictions      ContentRestrictions      `xml:"restrictions"`
-	TestProperty      TestProperty             `xml:"test_property"`
-	LocalizationCheck LocalizationCheck        `xml:"localization_check"`
-	Gender            Gender                   `xml:"gender"`
-	ProductionCompany ContentProductionCompany `xml:"production_company"`
-	Character         ContentCharacter         `xml:"character"`
-	Franchise         Franchise                `xml:"franchise"`
-	Shild             Shild                    `xml:"shild"`
-	NewContent        NewContent               `xml:"new_content"`
+	Tima              Tima                     `xml:"tima" pg:"jsonb"`
+	Theme             Theme                    `xml:"theme" pg:"jsonb"`
+	Audience          Audience                 `xml:"audience" pg:"jsonb"`
+	Subgenre          Subgenre                 `xml:"subgenre" pg:"jsonb"`
+	Mood              MoodInfo                 `xml:"mood" pg:"jsonb"`
+	Quality           Quality                  `xml:"quality" pg:"jsonb"`
+	About             About                    `xml:"about" pg:"jsonb"`
+	Basis             Basis                    `xml:"basis" pg:"jsonb"`
+	CategoryProperty  CategoryProperty         `xml:"category_property" pg:"jsonb"`
+	Check             ContentCheck             `xml:"check" pg:"jsonb"`
+	Place             Place                    `xml:"place" pg:"jsonb"`
+	Restrictions      ContentRestrictions      `xml:"restrictions" pg:"jsonb"`
+	TestProperty      TestProperty             `xml:"test_property" pg:"jsonb"`
+	LocalizationCheck LocalizationCheck        `xml:"localization_check" pg:"jsonb"`
+	Gender            Gender                   `xml:"gender" pg:"jsonb"`
+	ProductionCompany ContentProductionCompany `xml:"production_company" pg:"jsonb"`
+	Character         ContentCharacter         `xml:"character" pg:"jsonb"`
+	Franchise         Franchise                `xml:"franchise" pg:"jsonb"`
+	Shild             Shild                    `xml:"shild" pg:"jsonb"`
+	NewContent        NewContent               `xml:"new_content" pg:"jsonb"`
 }
 
 type Contents struct {
-	Text    string    `xml:",chardata"`
 	Content []Content `xml:"content"`
 }
 
-// XML was generated 2019-07-02 14:25:57 by DESKTOP-70UBMEV\Arog on DESKTOP-70UBMEV.
 type MyShows struct {
 	XMLName                 xml.Name           `xml:"xml"`
-	Text                    string             `xml:",chardata"`
 	ContentCategories       ContentCategories  `xml:"content_categories"`
 	ContentCategory2s       ContentCategories  `xml:"content_category_2s"`
 	ContentCategory3s       ContentCategories  `xml:"content_category_3s"`
