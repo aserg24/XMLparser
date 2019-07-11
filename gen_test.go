@@ -2,6 +2,9 @@ package main
 
 import (
 	"XMLparser/structureXML"
+	"bytes"
+	"go/format"
+	"io"
 	"io/ioutil"
 	"os"
 	"reflect"
@@ -18,21 +21,44 @@ func CreateTable(i interface{}, tableName string) string {
 		typeField := val.Type().Field(j)
 		tag := typeField.Tag
 
+		var sqlType string
 		if tag.Get("pg") == "jsonb" {
-			fields = append(fields, "\n\t\""+tag.Get("xml")+"\" jsonb")
+			sqlType = "jsonb"
 		} else if typeField.Type.String() == "[]string" {
-			fields = append(fields, "\n\t\""+strings.SplitN(tag.Get("xml"), ",", 2)[0]+"\" text[]")
+			sqlType = "text[]"
 		} else {
-			fields = append(fields, "\n\t\""+tag.Get("xml")+"\" text")
+			sqlType = "text"
 		}
+		fields = append(fields, "\n\t\""+strings.SplitN(tag.Get("xml"), ">", 2)[0]+"\" "+sqlType)
 	}
 	query += strings.Join(fields, ",") + "\n);"
 	return query
 }
 
-func CopyTable(tag string) string {
-	query := "COPY " + tag + "\n" + `FROM 'D:\proger\go\src\XMLparser\tables\` + tag + `.csv' DELIMITER ';' CSV;`
-	return query
+func TestCreateTablePersons(t *testing.T) {
+	p := structureXML.Person{}
+	q := CreateTable(&p, "persons")
+	expected := `CREATE TABLE persons
+(
+	id text,
+	posters jsonb,
+	name text,
+	is_star text,
+	eng_title text,
+	gen_title text,
+	hru text,
+	fake_hru text,
+	blog_post text,
+	blog_link text,
+	blog_added text,
+	bio text,
+	facts text,
+	rss text,
+	kinopoisk_id text
+);`
+	if q != expected {
+		t.Errorf("Table 'persons' was created incorrectly, got: \n%s \nwant: \n%s ", q, expected)
+	}
 }
 
 func TestGenCreateTables(t *testing.T) {
@@ -48,6 +74,22 @@ func TestGenCreateTables(t *testing.T) {
 	}
 }
 
+// text/template
+// https://golang.org/pkg/text/template/#example_Template
+
+// rewrite sql => schema ivi_new
+// create schema ivi;
+// create table ivi.countries...
+
+// new file with copy from
+
+// begin; rename ivi to ivi_old; rename ivi_new to ivi; drop ivi_old; commit;
+
+func CopyTable(tag string) string {
+	query := "COPY " + tag + "\n" + `FROM 'D:\proger\go\src\XMLparser\tables\` + tag + `.csv' DELIMITER ';' CSV;`
+	return query
+}
+
 func TestGenCopyTables(t *testing.T) {
 	t.Skip()
 	sql := ""
@@ -61,20 +103,18 @@ func TestGenCopyTables(t *testing.T) {
 }
 
 func TestGenLines(t *testing.T) {
-	filename := "structureXML/liners.go"
-	file, err := os.OpenFile(filename, os.O_TRUNC|os.O_CREATE, os.ModePerm)
-	if err != nil {
-		t.Error(err)
-	}
-	defer file.Close()
+	var buf bytes.Buffer
+
 	code := "package structureXML\nimport (\n\t\"strings\"\n)\n"
-	file.Write([]byte(code))
+	buf.Write([]byte(code))
 
-	tpl := "func (o {{.Struct}}) Line() []string {\n" +
-		"{{range .Fields}}{{if .IsJSON}} \t{{.Variable}} := getJSON(o.{{.Name}})\n{{end}}" +
-		"{{if .IsArray}}\t{{.Variable}} := \"{\" + strings.Join(o.{{.Name}},\",\") + \"}\"\n{{end}}{{end}}" +
-		"\treturn []string{ {{range .Fields}}{{if .IsSimple}}o.{{.Name}}{{else}}{{.Variable}}{{end}}, {{end}}}\n}\n"
-
+	tpl := `
+		func (o {{.Struct}}) Line() []string { 
+			{{range .Fields}}{{if .IsJSON}} {{.Variable}} := getJSON(o.{{.Name}})
+			{{end}}{{if .IsArray}}{{.Variable}} := strings.Join(o.{{.Name}},",")
+			{{end}}{{end}}return []string{ {{range .Fields}}{{if .IsSimple}}o.{{.Name}}{{else}}{{.Variable}}{{end}}, {{end}}}
+		}
+`
 	tmpl := template.Must(template.New("").Parse(tpl))
 
 	for tag, st := range structureXML.Mapping() {
@@ -86,10 +126,21 @@ func TestGenLines(t *testing.T) {
 			continue
 		}
 
-		err := fillStruct(val, tmpl, file)
+		err := writeTemplate(val, tmpl, &buf)
 		if err != nil {
 			t.Error(err)
 		}
+	}
+
+	fmtCode, err := format.Source(buf.Bytes())
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	filename := "structureXML/liners.go"
+	err = ioutil.WriteFile(filename, fmtCode, os.ModePerm)
+	if err != nil {
+		t.Fatal(err)
 	}
 }
 
@@ -101,7 +152,7 @@ type FldType struct {
 	Variable string
 }
 
-func fillStruct(val reflect.Value, tmpl *template.Template, file *os.File) error {
+func writeTemplate(val reflect.Value, tmpl *template.Template, file io.Writer) error {
 	data := struct {
 		Struct string
 		Fields []FldType

@@ -69,14 +69,13 @@ func parseXML(decoder *xml.Decoder, tag, dir string) error {
 	if err != nil {
 		return err
 	}
+	defer file.Close()
+
 	csvWriter := csv.NewWriter(file)
+	defer csvWriter.Flush()
 	csvWriter.Comma = ';'
 
-	if err != nil {
-		return err
-	}
-	defer file.Close()
-	defer csvWriter.Flush()
+	xType := reflect.TypeOf(st)
 
 	for {
 		t, err := decoder.Token()
@@ -88,7 +87,6 @@ func parseXML(decoder *xml.Decoder, tag, dir string) error {
 		}
 		switch se := t.(type) {
 		case xml.StartElement:
-			xType := reflect.TypeOf(st)
 			obj := reflect.New(xType).Interface()
 
 			if w, ok := obj.(structureXML.CSVLiner); !ok {
@@ -96,7 +94,7 @@ func parseXML(decoder *xml.Decoder, tag, dir string) error {
 			} else if err := decoder.DecodeElement(&obj, &se); err != nil {
 				log.Print(err)
 				return err
-			} else if er := structureXML.ProcessingTag(csvWriter, w.Line()); er != nil {
+			} else if err := csvWriter.Write(w.Line()); err != nil {
 				return err
 			}
 

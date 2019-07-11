@@ -7,13 +7,30 @@ CREATE TABLE content_categories
 	"description" text,
 	"hru" text
 );
-CREATE TABLE content_genres
+CREATE TABLE moods
 (
 	"id" text,
-	"category_id" text,
+	"title" text,
+	"info" text
+);
+CREATE TABLE content_formats
+(
+	"id" text,
 	"title" text,
 	"description" text,
-	"hru" text
+	"type_id" text,
+	"group" text
+);
+CREATE TABLE langs
+(
+	"id" text,
+	"title" text,
+	"name" text
+);
+CREATE TABLE promo
+(
+	"id" text,
+	"title" text
 );
 CREATE TABLE persons
 (
@@ -33,11 +50,40 @@ CREATE TABLE persons
 	"rss" text,
 	"kinopoisk_id" text
 );
-CREATE TABLE persons_type
+CREATE TABLE countries
 (
 	"id" text,
 	"title" text,
-	"description" text
+	"name" text
+);
+CREATE TABLE rus_versions
+(
+	"id" text,
+	"title" text
+);
+CREATE TABLE property_values
+(
+	"id" text,
+	"title" text
+);
+CREATE TABLE additional_data_type
+(
+	"id" text,
+	"title" text
+);
+CREATE TABLE content_genres
+(
+	"id" text,
+	"category_id" text,
+	"title" text,
+	"description" text,
+	"hru" text
+);
+CREATE TABLE instruments
+(
+	"id" text,
+	"title" text,
+	"info" text
 );
 CREATE TABLE content_types
 (
@@ -51,125 +97,6 @@ CREATE TABLE properties
 	"title" text,
 	"xml_field" text,
 	"unique" text
-);
-CREATE TABLE countries
-(
-	"id" text,
-	"title" text,
-	"name" text
-);
-CREATE TABLE rus_versions
-(
-	"id" text,
-	"title" text
-);
-CREATE TABLE content_formats
-(
-	"id" text,
-	"title" text,
-	"description" text,
-	"type_id" text,
-	"group" text
-);
-CREATE TABLE langs
-(
-	"id" text,
-	"title" text,
-	"name" text
-);
-CREATE TABLE additional_data_type
-(
-	"id" text,
-	"title" text
-);
-CREATE TABLE compilations
-(
-	"id" text,
-	"title" text,
-	"description" text,
-	"restrict" text,
-	"orig_country" text,
-	"kinopoisk_id" text,
-	"imdb_rating" text,
-	"kinopoisk_rating" text,
-	"usa_box_office" text,
-	"world_box_office" text,
-	"weekend_box_office" text,
-	"production_budget" text,
-	"hru" text,
-	"first_series_date" text,
-	"last_series_date" text,
-	"persons" jsonb,
-	"genres>genre>content_genre_id" text[],
-	"awards" jsonb,
-	"posters" jsonb,
-	"season_description" jsonb,
-	"release_dates" jsonb,
-	"additional_data" jsonb,
-	"categories>category>content_category_id" text[],
-	"tima" jsonb,
-	"production_company" jsonb,
-	"theme" jsonb,
-	"audience" jsonb,
-	"mood" jsonb,
-	"quality" jsonb,
-	"about" jsonb,
-	"basis" jsonb,
-	"place" jsonb,
-	"fake" text,
-	"subgenre" jsonb,
-	"gender" jsonb,
-	"character" jsonb,
-	"category_property" jsonb,
-	"check" jsonb,
-	"restrictions" jsonb
-);
-CREATE TABLE instruments
-(
-	"id" text,
-	"title" text,
-	"info" text
-);
-CREATE TABLE moods
-(
-	"id" text,
-	"title" text,
-	"info" text
-);
-CREATE TABLE property_values
-(
-	"id" text,
-	"title" text
-);
-CREATE TABLE content_category_2s
-(
-	"id" text,
-	"title" text,
-	"description" text,
-	"hru" text
-);
-CREATE TABLE content_category_3s
-(
-	"id" text,
-	"title" text,
-	"description" text,
-	"hru" text
-);
-CREATE TABLE awards
-(
-	"id" text,
-	"title" text,
-	"description" text,
-	"place" text,
-	"url_to_resource" text,
-	"image_id" text,
-	"start_year" text,
-	"end_year" text
-);
-CREATE TABLE promo
-(
-	"id" text,
-	"title" text
 );
 CREATE TABLE contents
 (
@@ -237,4 +164,77 @@ CREATE TABLE contents
 	"franchise" jsonb,
 	"shild" jsonb,
 	"new_content" jsonb
+);
+CREATE TABLE content_category_2s
+(
+	"id" text,
+	"title" text,
+	"description" text,
+	"hru" text
+);
+CREATE TABLE content_category_3s
+(
+	"id" text,
+	"title" text,
+	"description" text,
+	"hru" text
+);
+CREATE TABLE persons_type
+(
+	"id" text,
+	"title" text,
+	"description" text
+);
+CREATE TABLE awards
+(
+	"id" text,
+	"title" text,
+	"description" text,
+	"place" text,
+	"url_to_resource" text,
+	"image_id" text,
+	"start_year" text,
+	"end_year" text
+);
+CREATE TABLE compilations
+(
+	"id" text,
+	"title" text,
+	"description" text,
+	"restrict" text,
+	"orig_country" text,
+	"kinopoisk_id" text,
+	"imdb_rating" text,
+	"kinopoisk_rating" text,
+	"usa_box_office" text,
+	"world_box_office" text,
+	"weekend_box_office" text,
+	"production_budget" text,
+	"hru" text,
+	"first_series_date" text,
+	"last_series_date" text,
+	"persons" jsonb,
+	"genres" text[],
+	"awards" jsonb,
+	"posters" jsonb,
+	"season_description" jsonb,
+	"release_dates" jsonb,
+	"additional_data" jsonb,
+	"categories" text[],
+	"tima" jsonb,
+	"production_company" jsonb,
+	"theme" jsonb,
+	"audience" jsonb,
+	"mood" jsonb,
+	"quality" jsonb,
+	"about" jsonb,
+	"basis" jsonb,
+	"place" jsonb,
+	"fake" text,
+	"subgenre" jsonb,
+	"gender" jsonb,
+	"character" jsonb,
+	"category_property" jsonb,
+	"check" jsonb,
+	"restrictions" jsonb
 );
