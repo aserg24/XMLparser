@@ -1,4 +1,4 @@
-package structureXML
+package ivi
 
 import "encoding/xml"
 

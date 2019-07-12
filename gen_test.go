@@ -1,7 +1,8 @@
 package main
 
 import (
-	"XMLparser/structureXML"
+	"XMLparser/db"
+	"XMLparser/ivi"
 	"bytes"
 	"go/format"
 	"io"
@@ -13,31 +14,9 @@ import (
 	"text/template"
 )
 
-func CreateTable(i interface{}, tableName string) string {
-	val := reflect.ValueOf(i).Elem()
-	var fields []string
-	query := "CREATE TABLE " + tableName + "\n("
-	for j := 0; j < val.NumField(); j++ {
-		typeField := val.Type().Field(j)
-		tag := typeField.Tag
-
-		var sqlType string
-		if tag.Get("pg") == "jsonb" {
-			sqlType = "jsonb"
-		} else if typeField.Type.String() == "[]string" {
-			sqlType = "text[]"
-		} else {
-			sqlType = "text"
-		}
-		fields = append(fields, "\n\t\""+strings.SplitN(tag.Get("xml"), ">", 2)[0]+"\" "+sqlType)
-	}
-	query += strings.Join(fields, ",") + "\n);"
-	return query
-}
-
 func TestCreateTablePersons(t *testing.T) {
-	p := structureXML.Person{}
-	q := CreateTable(&p, "persons")
+	p := ivi.Person{}
+	q := db.CreateTable(&p, "persons", "public")
 	expected := `CREATE TABLE persons
 (
 	id text,
@@ -63,10 +42,10 @@ func TestCreateTablePersons(t *testing.T) {
 
 func TestGenCreateTables(t *testing.T) {
 	sql := "DROP SCHEMA public CASCADE;\nCREATE SCHEMA public;\n"
-	for tag, st := range structureXML.Mapping() {
+	for tag, st := range ivi.Mapping() {
 		xType := reflect.TypeOf(st)
 		obj := reflect.New(xType).Interface()
-		sql += CreateTable(obj, tag) + "\n"
+		sql += db.CreateTable(obj, tag, "public") + "\n"
 	}
 	err := ioutil.WriteFile("testdata/ddl.sql", []byte(sql), os.ModePerm)
 	if err != nil {
@@ -74,29 +53,72 @@ func TestGenCreateTables(t *testing.T) {
 	}
 }
 
+func TestGenSchema(t *testing.T) {
+	oldSchema := "ivi"
+	newSchema := "ivi"
+	sql := "DROP SCHEMA " + oldSchema + " CASCADE;\nCREATE SCHEMA " + newSchema + ";\n"
+	for tag, st := range ivi.Mapping() {
+		xType := reflect.TypeOf(st)
+		obj := reflect.New(xType).Interface()
+		sql += db.CreateTable(obj, tag, newSchema) + "\n"
+	}
+	err := ioutil.WriteFile("testdata/create_schema_ivi.sql", []byte(sql), os.ModePerm)
+	if err != nil {
+		t.Error(err)
+	}
+}
+
+func TestUpdateSchema(t *testing.T) {
+	schema := "ivi"
+	newSchema := "new_" + schema
+	var tables string
+	sql := `CREATE SCHEMA new_@schema;
+
+@tables
+
+BEGIN;
+ALTER SCHEMA @schema RENAME TO old_@schema;
+ALTER SCHEMA new_@schema RENAME TO @schema;
+COMMIT;
+
+DROP SCHEMA old_@schema CASCADE;
+`
+
+	// create
+	for tag, st := range ivi.Mapping() {
+		xType := reflect.TypeOf(st)
+		obj := reflect.New(xType).Interface()
+		tables += db.CreateTable(obj, tag, newSchema) + "\n"
+	}
+	// fill
+	for tag, _ := range ivi.Mapping() {
+		tables += db.CopyTable(tag, newSchema) + "\n"
+	}
+
+	sr := strings.NewReplacer("@schema", schema, "@tables", tables)
+	sql = sr.Replace(sql)
+
+	err := ioutil.WriteFile("testdata/update_ivi.sql", []byte(sql), os.ModePerm)
+	if err != nil {
+		t.Error(err)
+	}
+}
+
 // text/template
 // https://golang.org/pkg/text/template/#example_Template
-
 // rewrite sql => schema ivi_new
 // create schema ivi;
 // create table ivi.countries...
-
 // new file with copy from
-
 // begin; rename ivi to ivi_old; rename ivi_new to ivi; drop ivi_old; commit;
 
-func CopyTable(tag string) string {
-	query := "COPY " + tag + "\n" + `FROM 'D:\proger\go\src\XMLparser\tables\` + tag + `.csv' DELIMITER ';' CSV;`
-	return query
-}
-
 func TestGenCopyTables(t *testing.T) {
-	t.Skip()
+	schema := "ivi"
 	sql := ""
-	for tag, _ := range structureXML.Mapping() {
-		sql += CopyTable(tag) + "\n"
+	for tag, _ := range ivi.Mapping() {
+		sql += db.CopyTable(tag, schema) + "\n"
 	}
-	err := ioutil.WriteFile("testdata/dml.sql", []byte(sql), os.ModePerm)
+	err := ioutil.WriteFile("testdata/copy_csv_to_ivi.sql", []byte(sql), os.ModePerm)
 	if err != nil {
 		t.Error(err)
 	}
@@ -111,13 +133,13 @@ func TestGenLines(t *testing.T) {
 	tpl := `
 		func (o {{.Struct}}) Line() []string { 
 			{{range .Fields}}{{if .IsJSON}} {{.Variable}} := getJSON(o.{{.Name}})
-			{{end}}{{if .IsArray}}{{.Variable}} := strings.Join(o.{{.Name}},",")
+			{{end}}{{if .IsArray}}{{.Variable}} := "{" + strings.Join(o.{{.Name}},",") + "}"
 			{{end}}{{end}}return []string{ {{range .Fields}}{{if .IsSimple}}o.{{.Name}}{{else}}{{.Variable}}{{end}}, {{end}}}
 		}
 `
 	tmpl := template.Must(template.New("").Parse(tpl))
 
-	for tag, st := range structureXML.Mapping() {
+	for tag, st := range ivi.Mapping() {
 		xType := reflect.TypeOf(st)
 		obj := reflect.New(xType).Interface()
 		val := reflect.ValueOf(obj).Elem()

@@ -1,4 +1,4 @@
-package structureXML
+package ivi
 
 import (
 	"strings"
@@ -6,13 +6,13 @@ import (
 
 func (o Compilation) Line() []string {
 	persons := getJSON(o.Persons)
-	genres := strings.Join(o.Genres, ",")
+	genres := "{" + strings.Join(o.Genres, ",") + "}"
 	awards := getJSON(o.Awards)
 	posters := getJSON(o.Posters)
 	seasondescription := getJSON(o.SeasonDescription)
 	releasedates := getJSON(o.ReleaseDates)
 	additionaldata := getJSON(o.AdditionalData)
-	categories := strings.Join(o.Categories, ",")
+	categories := "{" + strings.Join(o.Categories, ",") + "}"
 	tima := getJSON(o.Tima)
 	productioncompany := getJSON(o.ProductionCompany)
 	theme := getJSON(o.Theme)
